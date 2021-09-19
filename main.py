@@ -1,5 +1,4 @@
 from AutoMerchandiseTrack import AutoMerchandiseTrack
-from datetime import date, datetime
 
 if __name__ == "__main__":
     ''' params: time_interval, merchandise, board, stop_time

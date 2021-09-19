@@ -9,7 +9,7 @@ import os
 class AutoMerchandiseTrack:
     PTTHOST = 'https://www.ptt.cc/bbs/'
     TITLE_KEYWORD = ['賣', '販', '售']
-    WEBHOOK_KEY = os.environ['WEBHOOK_KEY']
+    WEBHOOK_KEY = os.getenv('WEBHOOK_KEY')
     def __init__(self, time_interval, merchandise, board, stop_time):
         self.time_interval = time_interval
         self.merchandise = parse.quote(merchandise)
