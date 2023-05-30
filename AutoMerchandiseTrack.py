@@ -2,9 +2,11 @@ import requests
 from urllib import parse
 from bs4 import BeautifulSoup
 from time import sleep
+from dotenv import load_dotenv
 from datetime import datetime
 import pandas as pd
 import os
+load_dotenv()
 
 class AutoMerchandiseTrack:
     PTTHOST = 'https://www.ptt.cc/bbs/'
@@ -15,7 +17,7 @@ class AutoMerchandiseTrack:
         self.merchandise = parse.quote(merchandise)
         self.board_url = self.PTTHOST + board
         self.stop_time = datetime.fromisoformat(stop_time)
-        self.filename = f'./history_track/track_{self.merchandise}_{board}.csv'
+        self.filename = f'./history_track/track_{merchandise.replace(" ", "_")}_{board}.csv'
         
         if (~os.path.isfile(self.filename)):
             df_init = pd.DataFrame(columns=['id', 'title', 'url'])
@@ -23,7 +25,7 @@ class AutoMerchandiseTrack:
     
     def search(self):
         df_history = pd.read_csv(self.filename)
-        id_history = df_history['id'].tolist();
+        id_history = df_history['id'].tolist()
 
         html_text = requests.get(f'{self.board_url}/search?q={self.merchandise}').text
         bs = BeautifulSoup(html_text, 'lxml')
@@ -47,8 +49,8 @@ class AutoMerchandiseTrack:
                         re_dict['content']
                     )
                 df_append = pd.DataFrame([[re_dict['id'], re_dict['title'], re_dict['url']]], columns=['id', 'title', 'url'])
-                df_history = df_history.append(df_append)
-                df_history.to_csv(self.filename, index=False, encoding='utf-8-sig');
+                df_history = pd.concat([df_history, df_append], axis=0)
+                df_history.to_csv(self.filename, index=False, encoding='utf-8-sig')
             sleep(5)
         
             
@@ -71,3 +73,7 @@ class AutoMerchandiseTrack:
             self.search()
             sleep(self.time_interval)
             now_datetime = datetime.now() # update
+
+
+if __name__ == "__main__":
+    pass
